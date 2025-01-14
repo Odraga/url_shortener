@@ -15,6 +15,8 @@ module Api
         url_short = UrlShort.find_by(shortener_url: params[:id])
 
         if url_short
+          url_short.increment!(:click_count)
+
           render json: url_short
         else
           render json: { error: "URL not found" }, status: :not_found
@@ -26,9 +28,6 @@ module Api
         # Make scraping
         begin
           url_short = UrlShort.new(url_short_params)
-
-          
-
 
           url_short.title = get_page_title(url_short.original_url)
           url_short.shortener_url = generate_shortened_url()  # Generate URl Short
@@ -47,21 +46,39 @@ module Api
       end
 
       # PATCH/PUT /url_shorts/:id
-      def update
-        url_short = UrlShort.find(params[:id])
-        if url_short.update(url_short_params)
-          render json: url_short
-        else
-          render json: url_short.errors, status: :unprocessable_entity
-        end
-      end
+      #def update
+      #  url_short = UrlShort.find(params[:id])
+      #  if url_short.update(url_short_params)
+      #    render json: url_short
+      #  else
+      #    render json: url_short.errors, status: :unprocessable_entity
+      #  end
+      #end
 
       # DELETE /url_shorts/:id
-      def destroy
-        url_short = UrlShort.find(params[:id])
-        url_short.destroy
-        head :no_content
+      #def destroy
+      #  url_short = UrlShort.find(params[:id])
+      #  url_short.destroy
+      #  head :no_content
+      #end
+
+      def most_visited_urls
+        begin
+          # Agrupar por 'title' y sumar los 'click_count' para cada grupo
+          most_visited = UrlShort
+                          .select('title, SUM(click_count) AS total_clicks') # Selecciona el título y la suma de clics
+                          .group('title') # Agrupa por 'title'
+                          .order('total_clicks DESC') # Ordena por la suma de clics de forma descendente
+                          .limit(100) # Limita los resultados a los primeros 100
+      
+          render json: most_visited, status: :ok
+      
+        rescue => e
+          render json: { error: "URLs not found" }, status: :not_found
+        end      
       end
+
+      
 
       private
 
@@ -94,7 +111,5 @@ module Api
         title
       end
     end
-
-
   end
 end
