@@ -14,10 +14,10 @@ module UrlShortener
     # Configuración para habilitar CORS
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:5173' # Dominio del frontend
+        origins 'https://web-scraping-ruddy.vercel.app' # Dominio del frontend
         resource '*',
                  headers: :any,
-                 methods: [:get, :post],
+                 methods: [:get, :post,  :options],
                  credentials: true
       end
     end
