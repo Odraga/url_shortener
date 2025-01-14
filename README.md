@@ -1,30 +1,89 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This README provides the necessary steps and information to get the application up and running, as well as details about its configuration and usage.
 
-Things you may want to cover:
+## Ruby Version
 
-* Ruby version
+Specify the Ruby version required for this project:
+- Ruby 3.2.0 (or the version specified in `.ruby-version` if available)
 
-* System dependencies
+## Configuration
 
-* Configuration
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/odraga/url_shortener.git
+   cd url_shortener
+   ```
+2. Install Ruby gems:
+   ```bash
+   bundle install
+   ```
 
-* Database creation
+## Database Creation
 
-* Database initialization
+Set up the database by running:
+```bash
+rails db:create
+```
 
-* How to run the test suite
+## Database Initialization
 
-* Services (job queues, cache servers, search engines, etc.)
+Run the database migrations and seed data:
+```bash
+rails db:migrate
+rails db:seed
+```
 
-* Deployment instructions
+## How to Run the Test Suite
 
-# Steps installs Dependencies
+To run the test suite, execute:
+```bash
+rails test
+```
+If you are using RSpec:
+```bash
+bundle exec rspec
+```
 
-0. bundle install
-1. sudo apt install redis-server
-2. redis-server
-3. bundle exec sidekiq
-4. Install sudo apt-get install chromium-chromedriver
+## Services (Job Queues, Cache Servers, Search Engines, etc.)
+
+- **Job Queues:** Ensure you have the necessary background job processor (e.g., Sidekiq or Delayed Job) running:
+  ```bash
+  bundle exec sidekiq
+  ```
+- **Cache Servers:** Configure a caching server (e.g., Redis) if required. Start Redis with:
+  ```bash
+  redis-server
+  ```
+## Deployment Instructions
+
+To deploy the application:
+1. Ensure the production environment is properly configured.
+2. Precompile assets:
+   ```bash
+   rails assets:precompile
+   ```
+3. Migrate the production database:
+   ```bash
+   rails db:migrate RAILS_ENV=production
+   ```
+4. Restart the server.
+
+## Additional Information
+
+- **Background Jobs:**
+  Background jobs are handled using ActiveJob. Ensure the configured adapter (e.g., Sidekiq, Delayed Job) is running.
+
+- **ScrapePageTitleJob:**
+  This job scrapes the title of a given webpage using Selenium. Ensure that Selenium WebDriver and a compatible browser (e.g., Chrome) are installed.
+  ```bash
+  brew install --cask google-chrome
+  brew install chromedriver
+  ```
+
+- **Environment Variables:**
+  Configure environment variables for sensitive data (e.g., API keys) using a library like [dotenv](https://github.com/bkeepers/dotenv). Add the variables to `.env` and ensure it is excluded from version control.
+
+---
+
+Feel free to modify this README to include additional sections or details as needed.
