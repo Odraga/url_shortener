@@ -17,7 +17,7 @@ module UrlShortener
         origins 'http://localhost:5173' # Dominio del frontend
         resource '*',
                  headers: :any,
-                 methods: [:get, :post, :patch, :options],
+                 methods: [:get, :post],
                  credentials: true
       end
     end

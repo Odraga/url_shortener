@@ -25,22 +25,21 @@ module Api
 
       # POST /url_shorts
       def create
-        # Make scraping
         begin
           url_short = UrlShort.new(url_short_params)
 
-          url_short.title = get_page_title(url_short.original_url)
-          url_short.shortener_url = generate_shortened_url()  # Generate URl Short
+          url_short.shortener_url = generate_shortened_url()
           url_short.click_count = 0  
-
+      
           if url_short.save
+            ScrapePageTitleJob.perform_later(url_short.original_url)
+      
             render json: url_short, status: :created
           else
             render json: url_short.errors, status: :unprocessable_entity
-          end 
-    
+          end
         rescue => e
-          render json: { error: "Error scraping URL: #{e.message}" }, status: :unprocessable_entity
+          render json: { error: "Error processing URL: #{e.message}" }, status: :unprocessable_entity
           return
         end
       end
@@ -66,7 +65,7 @@ module Api
         begin
           # Agrupar por 'title' y sumar los 'click_count' para cada grupo
           most_visited = UrlShort
-                          .select('title, SUM(click_count) AS total_clicks') # Selecciona el título y la suma de clics
+                          .select('title, SUM(click_count) AS total_clicks, original_url') # Selecciona el título y la suma de clics
                           .group('title') # Agrupa por 'title'
                           .order('total_clicks DESC') # Ordena por la suma de clics de forma descendente
                           .limit(100) # Limita los resultados a los primeros 100
@@ -77,8 +76,6 @@ module Api
           render json: { error: "URLs not found" }, status: :not_found
         end      
       end
-
-      
 
       private
 
@@ -93,22 +90,6 @@ module Api
       def generate_shortened_url()
         new_url = SecureRandom.alphanumeric(8) 
         "#{new_url}"
-      end
-      
-      def get_page_title(url)
-        options = Selenium::WebDriver::Chrome::Options.new
-        options.add_argument('--headless')
-        driver = Selenium::WebDriver.for :chrome, options: options
-
-        driver.get(url)
-
-        wait = Selenium::WebDriver::Wait.new(timeout: 10)
-        wait.until { driver.title != "" }
-
-        title = driver.title
-        driver.quit
-
-        title
       end
     end
   end

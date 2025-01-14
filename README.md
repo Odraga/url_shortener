@@ -21,7 +21,10 @@ Things you may want to cover:
 
 * Deployment instructions
 
-# Selenium requeriments
-* Install sudo apt-get install chromium-chromedriver
+# Steps installs Dependencies
 
-* 
+0. bundle install
+1. sudo apt install redis-server
+2. redis-server
+3. bundle exec sidekiq
+4. Install sudo apt-get install chromium-chromedriver

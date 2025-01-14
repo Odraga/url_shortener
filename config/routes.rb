@@ -14,7 +14,6 @@ Rails.application.routes.draw do
       resources :url_short do
         collection do
           get :most_visited_urls
-          patch :increment_click_count
         end
       end  
     end

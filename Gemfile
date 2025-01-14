@@ -49,6 +49,10 @@ group :development, :test do
 
   gem 'selenium-webdriver'
 
+  gem 'sidekiq'
+  
+  gem 'redis'
+
 end
 
 
