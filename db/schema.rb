@@ -10,10 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_14_061417) do
-  create_table "groups", force: :cascade do |t|
-    t.string "name"
+ActiveRecord::Schema[8.0].define(version: 2025_01_14_144212) do
+  create_table "url_shorts", force: :cascade do |t|
+    t.string "original_url"
+    t.string "shortener_url"
+    t.integer "click_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
   end
 end

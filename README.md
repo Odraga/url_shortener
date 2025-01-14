@@ -21,4 +21,7 @@ Things you may want to cover:
 
 * Deployment instructions
 
-* ...
+# Selenium requeriments
+* Install sudo apt-get install chromium-chromedriver
+
+* 
